@@ -52,9 +52,11 @@ namespace CustomerManagementService
             });
 
             services.AddSingleton<IAuthorizationHandler, HasPermissionHandler>();
-
+            
             services.AddDbContext<CustomerDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("CustomerDbConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("CustomerDbConnection"),
+                    m => m.MigrationsAssembly("CustomerDatabase"))
+            );
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
