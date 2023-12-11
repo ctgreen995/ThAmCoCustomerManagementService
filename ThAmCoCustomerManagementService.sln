@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerDatabase", "CustomerDatabase\CustomerDatabase.csproj", "{3E47A022-B966-4785-8C36-BD3D0907B777}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerManagementService", "CustomerManagementService\CustomerManagementService.csproj", "{D2E4B14D-608B-4362-BDB8-012DDD8290A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerManagementService", "CustomerManagementService/CustomerManagementService.csproj", "{D2E4B14D-608B-4362-BDB8-012DDD8290A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
