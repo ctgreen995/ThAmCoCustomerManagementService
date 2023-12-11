@@ -32,14 +32,7 @@ namespace CustomerManagementService
             {
                 options.Authority = domain;
                 options.Audience = Configuration["Auth0:Audience"];
-<<<<<<< HEAD:Startup.cs
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    NameClaimType = ClaimTypes.NameIdentifier,
-                    RoleClaimType = ClaimTypes.Role
-                };
-=======
->>>>>>> 6a7509c (user secrets and folder structure):CustomerManagementService/Startup.cs
+
             });
 
             var mapperConfig = new MapperConfiguration(m => { m.AddProfile(new MapperProfile()); });
@@ -50,14 +43,6 @@ namespace CustomerManagementService
 
             services.AddAuthorization(options =>
             {
-<<<<<<< HEAD:Startup.cs
-                options.AddPolicy("Manage Account", policy => policy.Requirements
-                    .Add(new HasPermissionRequirement()));
-            });
-
-            services.AddSingleton<IAuthorizationHandler, HasPermissionHandler>();
-            
-=======
                 options.AddPolicy("ReadAccount", policy =>
            policy.Requirements.Add(new HasPermissionRequirement(new[] { "read:account" })));
                 options.AddPolicy("CreateAccount", policy =>
@@ -72,7 +57,6 @@ namespace CustomerManagementService
 
             services.AddSingleton<IAuthorizationHandler, HasPermissionHandler>();
 
->>>>>>> 6a7509c (user secrets and folder structure):CustomerManagementService/Startup.cs
             services.AddDbContext<CustomerDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("CustomerDbConnection"),
                     m => m.MigrationsAssembly("CustomerDatabase"))

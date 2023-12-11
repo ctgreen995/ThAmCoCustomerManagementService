@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>3d4bd57d-2dc1-442d-b7e9-81caafba652b</UserSecretsId>
+    <UserSecretsId>45421a26-2a27-47f8-97cf-ca5e9b2ab17d</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,13 +26,4 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.13" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CustomerDatabase\CustomerDatabase.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Profiles\bin\Debug\net7.0\Profiles.deps.json" />
-  </ItemGroup>
-
 </Project>
