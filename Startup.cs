@@ -1,11 +1,15 @@
-﻿using System.Security.Claims;
-using AutoMapper;
-using CustomerDatabase.Data;
+﻿using AutoMapper;
 using CustomerManagementService.Authorisation;
+using CustomerManagementService.Data;
+using CustomerManagementService.Repository.AccountRepositories;
+using CustomerManagementService.Repository.CustomerRepositories;
+using CustomerManagementService.Repository.ProfilesRepository;
+using CustomerManagementService.Services.AccountServices;
+using CustomerManagementService.Services.CustomerServices;
+using CustomerManagementService.Services.ProfileServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Profiles;
 
 namespace CustomerManagementService
@@ -29,13 +33,13 @@ namespace CustomerManagementService
                         JwtBearerDefaults.AuthenticationScheme;
                 })
                 .AddJwtBearer(options =>
-            {
-                options.Authority = domain;
-                options.Audience = Configuration["Auth0:Audience"];
+                {
+                    options.Authority = domain;
+                    options.Audience = Configuration["Auth0:Audience"];
+                });
 
-            });
-
-            var mapperConfig = new MapperConfiguration(m => { m.AddProfile(new MapperProfile()); });
+            var mapperConfig = new MapperConfiguration(m => 
+                { m.AddProfile(new MapperProfile()); });
             var mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
 
@@ -44,7 +48,7 @@ namespace CustomerManagementService
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("ReadAccount", policy =>
-           policy.Requirements.Add(new HasPermissionRequirement(new[] { "read:account" })));
+                    policy.Requirements.Add(new HasPermissionRequirement(new[] { "read:account" })));
                 options.AddPolicy("CreateAccount", policy =>
                     policy.Requirements.Add(new HasPermissionRequirement(new[] { "create:account" })));
                 options.AddPolicy("UpdateAccount", policy =>
@@ -56,6 +60,12 @@ namespace CustomerManagementService
             });
 
             services.AddSingleton<IAuthorizationHandler, HasPermissionHandler>();
+            services.AddSingleton<ICustomerService, CustomerService>();
+            services.AddSingleton<ICustomerRepository, CustomerRepository>();
+            services.AddSingleton<IAccountService, AccountService>();
+            services.AddSingleton<IAccountRepository, AccountRepository>();
+            services.AddSingleton<IProfileService, ProfileService>();
+            services.AddSingleton<IProfileRepository, ProfileRepository>();
 
             services.AddDbContext<CustomerDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("CustomerDbConnection"),

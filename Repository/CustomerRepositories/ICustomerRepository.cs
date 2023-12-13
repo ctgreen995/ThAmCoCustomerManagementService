@@ -1,6 +1,9 @@
-namespace CustomerManagementService.Repository;
+using CustomerManagementService.Models;
 
-public class ICustomerRepository
+namespace CustomerManagementService.Repository.CustomerRepositories;
+
+public interface ICustomerRepository
 {
-    
+    Task<Guid> AddCustomerAsync(string authId);
+    Task<Customer?> GetCustomerByAuthIdAsync(string id);
 }

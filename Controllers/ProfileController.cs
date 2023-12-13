@@ -1,6 +1,6 @@
 namespace CustomerManagementService.Controllers;
 
-public class SessionController
+public class ProfileController
 {
     
 }
