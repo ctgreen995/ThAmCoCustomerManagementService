@@ -11,9 +11,9 @@ public class Customer
     public string AuthId { get; set; }
     
     [Required]
-    public virtual Account Account { get; set; }
+    public virtual CustomerAccount CustomerAccount { get; set; }
     
     [Required]
-    public virtual Profile Profile { get; set; }
+    public virtual CustomerProfile CustomerProfile { get; set; }
 
 }

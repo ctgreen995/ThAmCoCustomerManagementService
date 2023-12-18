@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CustomerManagementService.Authorisation;
 using CustomerManagementService.Data;
+using CustomerManagementService.Profiles;
 using CustomerManagementService.Repository.AccountRepositories;
 using CustomerManagementService.Repository.CustomerRepositories;
 using CustomerManagementService.Repository.ProfilesRepository;
@@ -10,7 +11,6 @@ using CustomerManagementService.Services.ProfileServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Profiles;
 
 namespace CustomerManagementService
 {
@@ -62,14 +62,13 @@ namespace CustomerManagementService
             services.AddSingleton<IAuthorizationHandler, HasPermissionHandler>();
             services.AddSingleton<ICustomerService, CustomerService>();
             services.AddSingleton<ICustomerRepository, CustomerRepository>();
-            services.AddSingleton<IAccountService, AccountService>();
-            services.AddSingleton<IAccountRepository, AccountRepository>();
-            services.AddSingleton<IProfileService, ProfileService>();
-            services.AddSingleton<IProfileRepository, ProfileRepository>();
+            services.AddSingleton<ICustomerAccountService, CustomerAccountService>();
+            services.AddSingleton<ICustomerAccountRepository, CustomerAccountRepository>();
+            services.AddSingleton<ICustomerProfileService, CustomerProfileService>();
+            services.AddSingleton<ICustomerProfileRepository, CustomerProfileRepository>();
 
             services.AddDbContext<CustomerDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("CustomerDbConnection"),
-                    m => m.MigrationsAssembly("CustomerDatabase"))
+                options.UseSqlServer(Configuration.GetConnectionString("CustomerDbConnection"))
             );
         }
 

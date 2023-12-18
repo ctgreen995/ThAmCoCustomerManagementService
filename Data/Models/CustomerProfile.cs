@@ -3,7 +3,7 @@ using CustomerManagementService.Models;
 
 namespace CustomerManagementService.Data.Models;
 
-public class Profile
+public class CustomerProfile
 {
     public Guid Id { get; set; }
     public Guid CustomerId { get; set; }

@@ -1,9 +1,7 @@
 namespace CustomerManagementService.Dtos;
 
-public class ProfileDto
+public class CustomerProfileDto
 {
-    public string CustomerId { get; set; }
-
     public string Name { get; set; }
 
     public string Address { get; set; }

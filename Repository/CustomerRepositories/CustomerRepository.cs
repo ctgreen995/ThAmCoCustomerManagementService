@@ -1,3 +1,4 @@
+using CustomerManagementService.Data;
 using CustomerManagementService.Data.Models;
 using CustomerManagementService.Models;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +7,9 @@ namespace CustomerManagementService.Repository.CustomerRepositories;
 
 public class CustomerRepository : ICustomerRepository
 {
-    private readonly DbContext _context;
+    private readonly CustomerDbContext _context;
 
-    public CustomerRepository(DbContext context)
+    public CustomerRepository(CustomerDbContext context)
     {
         _context = context;
     }
@@ -16,9 +17,15 @@ public class CustomerRepository : ICustomerRepository
     
     public async Task<Customer?> GetCustomerByAuthIdAsync(string id)
     {
-        return await _context.Set<Customer>().FindAsync(id);
+        return await _context.Customers.FirstOrDefaultAsync(c => c.AuthId == id);
     }
-    
+
+    public async Task<Guid?> GetCustomerIdByAuthIdAsync(string id)
+    {
+        var customer = await _context.Customers.FirstOrDefaultAsync(c => c.AuthId == id);
+        return customer?.Id;
+    }
+
     public async Task<Guid> AddCustomerAsync(string authId)
     {
         var customer = new Customer {AuthId = authId};
@@ -27,17 +34,17 @@ public class CustomerRepository : ICustomerRepository
         return entityEntry.Entity.Id;
     }
     
-    public async Task<Profile> UpdateCustomerAsync(Profile profile)
+    public async Task<CustomerProfile> UpdateCustomerAsync(CustomerProfile customerProfile)
     {
-        _context.Set<Profile>().Update(profile);
+        _context.Set<CustomerProfile>().Update(customerProfile);
         await _context.SaveChangesAsync();
-        return profile;
+        return customerProfile;
     }
     
-    public async Task DeleteCustomerAsync(string id)
+    public Task DeleteCustomerAsync(string id)
     {
-        var customer = await _context.Set<Profile>().FindAsync(id);
-        if (customer != null) _context.Set<Profile>().Remove(customer);
-        await _context.SaveChangesAsync();
+        // No PII contained in customer table, so no need to delete.
+        // This remains here for future use.
+        return Task.CompletedTask;
     }
 }

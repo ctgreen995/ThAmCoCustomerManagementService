@@ -12,19 +12,19 @@ namespace CustomerManagementService.Controllers;
 public class CustomerController : ControllerBase
 {
     private readonly ICustomerService _customerService;
-    private readonly IAccountService _accountService;
-    private readonly IProfileService _profileService;
+    private readonly ICustomerAccountService _customerAccountService;
+    private readonly ICustomerProfileService _customerProfileService;
 
-    public CustomerController(ICustomerService customerService, IAccountService accountService,
-        IProfileService profileService)
+    public CustomerController(ICustomerService customerService, ICustomerAccountService customerAccountService,
+        ICustomerProfileService customerProfileService)
     {
         _customerService = customerService;
-        _accountService = accountService;
-        _profileService = profileService;
+        _customerAccountService = customerAccountService;
+        _customerProfileService = customerProfileService;
     }
 
     [HttpGet]
-    [Route("GetCustomerDetails/{id}")]
+    [Route("getCustomerDetailsbyAuthId/{id}")]
     public async Task<ActionResult> GetCustomerDetails(string id)
     {
         try
@@ -34,39 +34,29 @@ public class CustomerController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return BadRequest("An error occurred while processing your request to get customer details.\n"
+                              + e.Message);
         }
     }
 
     [HttpPost]
-    [Route("CreateCustomer")]
+    [Route("createCustomerbyAuthId/{id}")]
     public async Task<ActionResult> CreateCustomer([FromBody] CustomerDto customerDto)
     {
         try
         {
             var id = await _customerService.CreateCustomerAsync(customerDto);
-            if (id != null)
-            {
-                var locationUri = Url.Action(nameof(GetCustomerDetails), new { id = id });
-                return Created(locationUri, new { id = id });
-            }
-            else
-            {
-                return BadRequest("Failed to create the customer.");
-            }
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
+            return id != null ? Ok(id) : BadRequest("Failed to create the customer.");
         }
         catch (Exception ex)
         {
-            return BadRequest("An error occurred while processing your request.");
+            return BadRequest("An error occurred while processing your request to create a customer.\n"
+                              + ex.Message);
         }
     }
 
     [HttpDelete]
-    [Route("DeleteCustomer/{id}")]
+    [Route("deleteCustomerByAuthId/{id}")]
     public async Task<ActionResult> DeleteCustomer(string id)
     {
         try
@@ -76,7 +66,8 @@ public class CustomerController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return BadRequest("An error occurred while processing your request to delete a customer.\n"
+                              + e.Message);
         }
     }
 }
