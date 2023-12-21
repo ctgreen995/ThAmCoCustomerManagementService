@@ -51,8 +51,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: App Settings Variable Substitution
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: '${{env.DOTNET_ROOT}}/CustomerManagementService/appsettings.json'
+        env:
+          ConnectionStrings.Default: ${{ secrets.DEV_CUSTOMER_DB_CONNECTION }}
+      
       - uses: actions/checkout@v3
-
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v2
         with:
@@ -64,7 +70,7 @@ jobs:
       - name: Apply database migrations
         run: dotnet ef database update
         env:
-          ConnectionStrings__CustomerDbConnection: ${{ secrets.DEV_CUSTOMER_DB_CONNECTION }}
+          CustomerDbConnection: ${{ secrets.DEV_CUSTOMER_DB_CONNECTION }}
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
