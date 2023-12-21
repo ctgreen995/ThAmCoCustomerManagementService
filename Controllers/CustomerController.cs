@@ -1,7 +1,7 @@
+using AutoMapper.Internal;
+using CustomerManagementService.Authorisation;
 using CustomerManagementService.Dtos;
-using CustomerManagementService.Services.AccountServices;
 using CustomerManagementService.Services.CustomerServices;
-using CustomerManagementService.Services.ProfileServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,19 +13,15 @@ namespace CustomerManagementService.Controllers;
 public class CustomerController : ControllerBase
 {
     private readonly ICustomerService _customerService;
-    private readonly ICustomerAccountService _customerAccountService;
-    private readonly ICustomerProfileService _customerProfileService;
 
-    public CustomerController(ICustomerService customerService, ICustomerAccountService customerAccountService,
-        ICustomerProfileService customerProfileService)
+    public CustomerController(ICustomerService customerService)
     {
         _customerService = customerService;
-        _customerAccountService = customerAccountService;
-        _customerProfileService = customerProfileService;
     }
 
     [HttpGet]
-    [Route("getCustomerDetailsbyAuthId/{id}")]
+    [Authorize(Policy = "ReadCustomer")]
+    [Route("getCustomerDetailsById/{id}")]
     public async Task<ActionResult> GetCustomerDetails(string id)
     {
         try
@@ -45,7 +41,8 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPost]
-    [Route("createCustomerbyAuthId/{id}")]
+    [Authorize(Policy = "CreateCustomer")]
+    [Route("createCustomer")]
     public async Task<ActionResult> CreateCustomer([FromBody] CustomerDto customerDto)
     {
         try
@@ -73,8 +70,34 @@ public class CustomerController : ControllerBase
                               + ex.Message);
         }
     }
+    
+    [HttpPatch]
+    [Authorize(Policy = "UpdateCustomer")]
+    [Route("updateCustomerbyAuthId/{id}")]
+    public async Task<ActionResult> UpdateCustomer([FromBody] CustomerDto customerDto)
+    {
+        try
+        {
+            await _customerService.UpdateCustomerAsync(customerDto);
+            return Ok();
+        }
+        catch (KeyNotFoundException e)
+        {
+            return NotFound("Customer not found.\n" + e.Message);
+        }
+        catch (ArgumentNullException e)
+        {
+            return BadRequest("Customer id cannot be null.\n" + e.Message);
+        }
+        catch (Exception e)
+        {
+            return BadRequest("An error occurred while processing your request to update a customer.\n"
+                              + e.Message);
+        }
+    }
 
     [HttpDelete]
+    [Authorize(Policy = "DeleteCustomer")]
     [Route("deleteCustomerByAuthId/{id}")]
     public async Task<ActionResult> DeleteCustomer(string id)
     {

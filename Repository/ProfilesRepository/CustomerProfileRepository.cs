@@ -19,7 +19,7 @@ public class CustomerProfileRepository : ICustomerProfileRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<CustomerProfile?> GetProfileByCustomerIdAsync(Guid customerId)
+    public async Task<CustomerProfile?> GetProfileByCustomerIdAsync(Guid? customerId)
     {
         return await _context.Profiles.FirstOrDefaultAsync(p => p.CustomerId == customerId);
     }
@@ -32,19 +32,6 @@ public class CustomerProfileRepository : ICustomerProfileRepository
             throw new KeyNotFoundException("Profile not found.");
         }
         _context.Update(profile);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task DeleteProfileAsync(Guid customerId)
-    {
-        // Remove profile from database as this is the table that contains PII.
-        // This can be adjusted if some PII is to be kept for future use.
-        var profileToDelete = await _context.Profiles.FirstOrDefaultAsync(p => p.CustomerId == customerId);
-        if (profileToDelete == null)
-        {
-            throw new KeyNotFoundException("Profile not found.");
-        }
-        _context.Profiles.Remove(profileToDelete);
         await _context.SaveChangesAsync();
     }
 }

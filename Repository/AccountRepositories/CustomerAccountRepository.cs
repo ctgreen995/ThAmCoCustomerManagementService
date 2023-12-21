@@ -19,26 +19,21 @@ public class CustomerAccountRepository : ICustomerAccountRepository
         await _context.SaveChangesAsync();
     }
 
-    public Task<CustomerAccount?> GetAccountByCustomerIdAsync(Guid customerId)
+    public Task<CustomerAccount?> GetAccountByCustomerIdAsync(Guid? customerId)
     {
         return _context.Accounts.FirstOrDefaultAsync(a => a.CustomerId == customerId);
     }
-    
+
     public async Task UpdateAccountByCustomerIdAsync(CustomerAccount customerAccount)
     {
-        var accountToUpdate = await _context.Accounts.FirstOrDefaultAsync(a => a.CustomerId == customerAccount.CustomerId);
+        var accountToUpdate =
+            await _context.Accounts.FirstOrDefaultAsync(a => a.CustomerId == customerAccount.CustomerId);
         if (accountToUpdate == null)
         {
             throw new KeyNotFoundException("Account not found.");
         }
+
         _context.Update(customerAccount);
         await _context.SaveChangesAsync();
-    }
-
-    public Task DeleteAccountAsync(Guid customerId)
-    {
-        // No PII contained in customer account table, so no need to delete.
-        // This remains here for future use.
-        return Task.CompletedTask;
     }
 }

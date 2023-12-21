@@ -6,7 +6,7 @@ namespace CustomerManagementService.Data.Models;
 public class CustomerProfile
 {
     public Guid Id { get; set; }
-    public Guid CustomerId { get; set; }
+    public Guid? CustomerId { get; set; }
 
     public string Name { get; set; }
 

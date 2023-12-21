@@ -6,7 +6,6 @@ namespace CustomerManagementService.Repository.AccountRepositories;
 public interface ICustomerAccountRepository
 {
     Task AddAccountAsync(CustomerAccount customerAccount);
-    Task<CustomerAccount?> GetAccountByCustomerIdAsync(Guid customerId);
+    Task<CustomerAccount?> GetAccountByCustomerIdAsync(Guid? customerId);
     Task UpdateAccountByCustomerIdAsync(CustomerAccount customerAccount);
-    Task DeleteAccountAsync(Guid customerId);
 }

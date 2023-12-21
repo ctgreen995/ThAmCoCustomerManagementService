@@ -10,44 +10,42 @@ public class CustomerAccountService : ICustomerAccountService
 {
     private readonly IMapper _mapper;
     private readonly ICustomerAccountRepository _customerAccountRepository;
-    private readonly ICustomerService _customerService;
 
-    public CustomerAccountService(IMapper mapper, ICustomerAccountRepository customerAccountRepository,
-        ICustomerService customerService)
+    public CustomerAccountService(IMapper mapper, ICustomerAccountRepository customerAccountRepository)
     {
         _mapper = mapper;
         _customerAccountRepository = customerAccountRepository;
-        _customerService = customerService;
     }
 
-    public async Task<CustomerAccountDto> GetAccountByCustomerIdAsync(Guid customerId)
+    public async Task<CustomerAccountDto> GetAccountByCustomerIdAsync(Guid? customerId)
     {
+        if (customerId == null)
+        {
+            throw new ArgumentNullException(nameof(customerId));
+        }
         var account = await _customerAccountRepository.GetAccountByCustomerIdAsync(customerId);
+        if (account == null)
+        {
+            throw new KeyNotFoundException("Account not found.");
+        }
         var accountDto = _mapper.Map<CustomerAccountDto>(account);
         return accountDto;
     }
 
-    public async Task CreateAccountAsync(CustomerAccountDto customerAccountDto, Guid customerId)
+    public async Task CreateAccountAsync(CustomerAccountDto customerAccountDto, Guid? customerId)
     {
+        if(customerId == null) throw new ArgumentNullException(nameof(customerId));
         var account = _mapper.Map<CustomerAccount>(customerAccountDto);
         account.CustomerId = customerId;
         await _customerAccountRepository.AddAccountAsync(account);
     }
 
-    public async Task DeleteAccountAsync(Guid customerId)
+    public async Task UpdateAccountByCustomerIdAsync(Guid? customerId, CustomerAccountDto customerAccountDto)
     {
-        await _customerAccountRepository.DeleteAccountAsync(customerId);
-    }
-
-    public async Task UpdateAccountByAuthIdAsync(string authId, CustomerAccountDto customerAccountDto)
-    {
+        if(customerId == null) throw new ArgumentNullException(nameof(customerId));
         var account = _mapper.Map<CustomerAccount>(customerAccountDto);
-        var customerId = await _customerService.GetCustomerIdByAuthIdAsync(authId);
-        if (customerId != null)
-        {
-            account.CustomerId = customerId.Value;
-            await _customerAccountRepository.UpdateAccountByCustomerIdAsync(account);
-        }
-        else throw new KeyNotFoundException("Customer not found.");
+
+        account.CustomerId = customerId;
+        await _customerAccountRepository.UpdateAccountByCustomerIdAsync(account);
     }
 }

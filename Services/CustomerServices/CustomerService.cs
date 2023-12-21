@@ -1,13 +1,8 @@
 using AutoMapper;
-using CustomerManagementService.Data.Models;
 using CustomerManagementService.Dtos;
-using CustomerManagementService.Models;
-using CustomerManagementService.Repository.AccountRepositories;
 using CustomerManagementService.Repository.CustomerRepositories;
-using CustomerManagementService.Repository.ProfilesRepository;
 using CustomerManagementService.Services.AccountServices;
 using CustomerManagementService.Services.ProfileServices;
-using Profile = AutoMapper.Profile;
 
 namespace CustomerManagementService.Services.CustomerServices;
 
@@ -58,19 +53,18 @@ public class CustomerService : ICustomerService
     public async Task<Guid?> GetCustomerIdByAuthIdAsync(string id)
     {
         var customerId = await _customerRepository.GetCustomerIdByAuthIdAsync(id);
-        if (customerId == null)
-        {
-            throw new KeyNotFoundException("Customer not found.");
-        }
-
         return customerId;
     }
 
     public async Task<Guid?> CreateCustomerAsync(CustomerDto customerDto)
     {
+        if (customerDto == null || customerDto.CustomerAccountDto == null || customerDto.CustomerProfileDto == null)
+        {
+            throw new ArgumentNullException(nameof(customerDto));
+        }
+
         string authId = customerDto.AuthId;
         var customerId = await _customerRepository.AddCustomerAsync(authId);
-        
         await _customerAccountService.CreateAccountAsync(customerDto.CustomerAccountDto, customerId);
         await _customerProfileService.CreateProfileAsync(customerDto.CustomerProfileDto, customerId);
         return customerId;
@@ -79,13 +73,19 @@ public class CustomerService : ICustomerService
     public async Task DeleteCustomerAsync(string id)
     {
         var customerId = await _customerRepository.GetCustomerIdByAuthIdAsync(id);
-        if (customerId == null)
+
+        await _customerRepository.DeleteCustomerAsync(customerId);
+    }
+
+    public async Task UpdateCustomerAsync(CustomerDto customerDto)
+    {
+        if (customerDto == null || customerDto.CustomerAccountDto == null || customerDto.CustomerProfileDto == null)
         {
-            throw new KeyNotFoundException("Customer not found.");
+            throw new ArgumentNullException(nameof(customerDto));
         }
 
-        await _customerAccountService.DeleteAccountAsync(customerId.Value);
-        await _customerProfileService.DeleteProfileAsync(customerId.Value);
-        await _customerRepository.DeleteCustomerAsync(id);
+        var customerId = await _customerRepository.GetCustomerIdByAuthIdAsync(customerDto.AuthId);
+        await _customerAccountService.UpdateAccountByCustomerIdAsync(customerId, customerDto.CustomerAccountDto);
+        await _customerProfileService.UpdateProfileByCustomerIdAsync(customerId, customerDto.CustomerProfileDto);
     }
 }
