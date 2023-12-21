@@ -62,7 +62,7 @@ jobs:
         run: dotnet tool install --global dotnet-ef --version 7.0.7
   
       - name: Apply database migrations
-        run: dotnet ef database update
+        run: dotnet ef database update --project CustomerManagamentService.csproj
         env:
           ConnectionStrings__CustomerDbConnection: ${{ secrets.DEV_CUSTOMER_DB_CONNECTION }}
   
