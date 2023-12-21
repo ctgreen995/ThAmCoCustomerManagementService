@@ -11,6 +11,14 @@ namespace CustomerManagementService.StartupConfigurations
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder
+                        .WithOrigins("https://thamcocustomermanagementservicedev.azurewebsites.net")
+                        .WithMethods("GET", "POST", "PATCH", "DELETE")
+                        );
+            });
             services.AddAuthenticationServices(Configuration);
             services.AddAuthorizationServices();
             services.AddServiceDependencies(Configuration);
@@ -18,7 +26,7 @@ namespace CustomerManagementService.StartupConfigurations
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            IdentityModelEventSource.ShowPII = true;
+            app.UseCors("CorsPolicy");
             if (env.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
@@ -27,6 +35,7 @@ namespace CustomerManagementService.StartupConfigurations
             {
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();

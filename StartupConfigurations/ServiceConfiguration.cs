@@ -17,12 +17,6 @@ public static class ServiceConfiguration
 {
     public static void AddServiceDependencies(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddLogging(builder =>
-        {
-            builder.AddConsole();
-            builder.AddDebug();
-            builder.SetMinimumLevel(LogLevel.Debug);
-        });
         var mapperConfig = new MapperConfiguration(m => { m.AddProfile(new MapperProfile()); });
         var mapper = mapperConfig.CreateMapper();
         services.AddSingleton(mapper);
