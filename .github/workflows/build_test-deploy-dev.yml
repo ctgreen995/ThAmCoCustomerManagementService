@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-nuget-
             
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Development
 
   test:
     needs: build
@@ -44,27 +44,15 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Test with dotnet
-        run: dotnet test --configuration Release --no-build
+        run: dotnet test --configuration Development --no-build
 
   publish:
     needs: test
     runs-on: ubuntu-latest
   
-    steps:
-      
+    steps:      
       - uses: actions/checkout@v3
 
-      - name: List the root directory contents
-        run: ls -la
-
-      - name: App Settings Variable Substitution
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: 'appsettings.json'
-        env:
-          ConnectionStrings__CustomerDbConnection: ${{ secrets.DEV_CUSTOMER_DB_CONNECTION }}
-
-  
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v2
         with:
@@ -79,7 +67,7 @@ jobs:
           ConnectionStrings__CustomerDbConnection: ${{ secrets.DEV_CUSTOMER_DB_CONNECTION }}
   
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Development -o ${{env.DOTNET_ROOT}}/myapp
   
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
