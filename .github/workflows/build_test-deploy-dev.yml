@@ -51,6 +51,10 @@ jobs:
     runs-on: ubuntu-latest
   
     steps:
+
+      - name: List the root directory contents
+        run: ls -la
+
       - name: App Settings Variable Substitution
         uses: microsoft/variable-substitution@v1
         with:
