@@ -1,5 +1,4 @@
-﻿
-namespace CustomerManagementService.StartupConfigurations
+﻿namespace CustomerManagementService.StartupConfigurations
 {
     public class Startup
     {
@@ -14,7 +13,7 @@ namespace CustomerManagementService.StartupConfigurations
             {
                 options.AddPolicy("CorsPolicy",
                     builder => builder
-                        .WithOrigins("https://thamcocustomermanagementservicedev.azurewebsites.net")
+                        .AllowAnyOrigin()
                         .WithMethods("GET", "POST", "PATCH", "DELETE")
                         .AllowAnyHeader()
                 );
