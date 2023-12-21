@@ -1,5 +1,4 @@
-﻿using Microsoft.IdentityModel.Logging;
-
+﻿
 namespace CustomerManagementService.StartupConfigurations
 {
     public class Startup
@@ -17,7 +16,8 @@ namespace CustomerManagementService.StartupConfigurations
                     builder => builder
                         .WithOrigins("https://thamcocustomermanagementservicedev.azurewebsites.net")
                         .WithMethods("GET", "POST", "PATCH", "DELETE")
-                        );
+                        .AllowAnyHeader()
+                );
             });
             services.AddAuthenticationServices(Configuration);
             services.AddAuthorizationServices();
