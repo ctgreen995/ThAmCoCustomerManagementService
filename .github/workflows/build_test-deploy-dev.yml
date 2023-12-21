@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-nuget-
             
       - name: Build with dotnet
-        run: dotnet build --configuration Development
+        run: dotnet build --configuration Debug
 
   test:
     needs: build
@@ -44,7 +44,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Test with dotnet
-        run: dotnet test --configuration Development --no-build
+        run: dotnet test --configuration Debug --no-build
 
   publish:
     needs: test
@@ -67,7 +67,7 @@ jobs:
           ConnectionStrings__CustomerDbConnection: ${{ secrets.DEV_CUSTOMER_DB_CONNECTION }}
   
       - name: dotnet publish
-        run: dotnet publish -c Development -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Deebug -o ${{env.DOTNET_ROOT}}/myapp
   
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
