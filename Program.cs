@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore;
+using CustomerManagementService.StartupConfigurations;
 
 namespace CustomerManagementService
 {
