@@ -58,6 +58,14 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Install Entity Framework Core tools
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Apply database migrations
+        run: dotnet ef database update
+        env:
+          ConnectionString: ${{ secrets.DEV_CUSTOMER_DB_CONNECTION }}
+
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
