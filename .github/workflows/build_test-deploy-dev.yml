@@ -51,6 +51,8 @@ jobs:
     runs-on: ubuntu-latest
   
     steps:
+      
+      - uses: actions/checkout@v3
 
       - name: List the root directory contents
         run: ls -la
@@ -61,8 +63,7 @@ jobs:
           files: 'appsettings.json'
         env:
           ConnectionStrings__CustomerDbConnection: ${{ secrets.DEV_CUSTOMER_DB_CONNECTION }}
-  
-      - uses: actions/checkout@v3
+
   
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v2
