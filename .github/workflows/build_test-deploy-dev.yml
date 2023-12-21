@@ -46,7 +46,7 @@ jobs:
       - name: Test with dotnet
         run: dotnet test --configuration Debug --no-build
 
- publish:
+  publish:
     needs: test
     runs-on: ubuntu-latest
     environment: 
