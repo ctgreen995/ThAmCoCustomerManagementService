@@ -46,13 +46,14 @@ jobs:
       - name: Test with dotnet
         run: dotnet test --configuration Debug --no-build
 
-  publish:
+ publish:
     needs: test
     runs-on: ubuntu-latest
-  
-    steps:      
+    environment: 
+      name: 'Dev & Testing'
+    steps:
       - uses: actions/checkout@v3
-
+  
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v2
         with:
@@ -67,13 +68,14 @@ jobs:
           ConnectionStrings__CustomerDbConnection: ${{ secrets.DEV_CUSTOMER_DB_CONNECTION }}
   
       - name: dotnet publish
-        run: dotnet publish -c Deebug -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish CustomerManagementService.csproj -c Debug -o ${{env.DOTNET_ROOT}}/CustomerManagementService
   
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{env.DOTNET_ROOT}}/CustomerManagementService
+
 
   deploy:
     needs: publish
