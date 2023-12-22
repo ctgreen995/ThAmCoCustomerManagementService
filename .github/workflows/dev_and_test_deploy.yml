@@ -77,7 +77,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install Entity Framework Core tools
-        run: dotnet tool install --global dotnet-ef
+        run: dotnet tool install --global dotnet-ef --version 7.0.7
         
       - name: Apply database migrations (Dev & Testing)
         run: dotnet ef database update --project CustomerManagementService.csproj
