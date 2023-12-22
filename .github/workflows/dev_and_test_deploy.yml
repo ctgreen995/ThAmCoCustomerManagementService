@@ -81,6 +81,7 @@ jobs:
         
       - name: Apply database migrations (Dev & Testing)
         run: dotnet ef database update --project CustomerManagementService.csproj
+        working-directory: ${{ github.workspace }}
         env:
           ConnectionStrings__CustomerDbConnection: ${{ secrets.DEV_CUSTOMER_DB_CONNECTION }}
       - name: Deploy to Azure Web App (Dev & Testing)
