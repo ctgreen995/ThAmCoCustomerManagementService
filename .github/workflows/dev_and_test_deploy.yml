@@ -53,12 +53,12 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: dotnet publish (Dev & Testing)
-        run: dotnet publish CustomerManagementService.csproj -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/publish
+        run: dotnet publish CustomerManagementService.csproj -c Release -o ./publish
       - name: Upload artifact for deployment job (Dev & Testing)
         uses: actions/upload-artifact@v3
         with:
           name: .net-app
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/publish
+          path: ./publish
 
   migrate_database:
     needs: publish
