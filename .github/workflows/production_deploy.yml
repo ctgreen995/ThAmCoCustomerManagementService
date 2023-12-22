@@ -23,15 +23,9 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Verify branch is master
-        run: |
-          BRANCH_NAME=$(git branch -r --contains tags/${GITHUB_REF##*/} | grep 'origin/master' | head -n 1)
-          if [ -z "$BRANCH_NAME" ]; then
-            echo "This workflow is only for tags on the master branch."
-            exit 78
-          fi
-
+      - name: Install Entity Framework Core tools
+        run: dotnet tool install --global dotnet-ef --version 7.0.7
+        
       - name: Generate migration script for production
         run: dotnet ef migrations script --idempotent --output ./Data/Migrations/productionMigrations.sql --project CustomerManagementService.csproj
         env:
