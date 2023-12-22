@@ -73,7 +73,7 @@ public class CustomerController : ControllerBase
     
     [HttpPatch]
     [Authorize(Policy = "UpdateCustomer")]
-    [Route("updateCustomerbyAuthId/{id}")]
+    [Route("updateCustomerById/{id}")]
     public async Task<ActionResult> UpdateCustomer([FromBody] CustomerDto customerDto)
     {
         try

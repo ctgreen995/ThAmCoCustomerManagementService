@@ -29,12 +29,13 @@
             if (env.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
+                app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseHsts();
             }
-
+            
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
