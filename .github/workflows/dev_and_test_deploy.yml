@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - master
+    tags-ignore:
+      - "v*"
 
 env:
-  AZURE_WEBAPP_PACKAGE_PATH: '.'
-  DOTNET_VERSION: '7.0.x'
+  AZURE_WEBAPP_PACKAGE_PATH: "."
+  DOTNET_VERSION: "7.0.x"
 
 permissions:
   contents: read
@@ -57,14 +59,14 @@ jobs:
       - name: Upload artifact for deployment job (Dev & Testing)
         uses: actions/upload-artifact@v3
         with:
-          name: .net-app
+          name: CustomerManagementService-App
           path: ./publish
 
   migrate_database:
     needs: publish
     runs-on: ubuntu-latest
-    environment: 
-      name: 'Dev & Testing'
+    environment:
+      name: "Dev & Testing"
     steps:
       - uses: actions/checkout@v3
       - name: Set up .NET Core
@@ -83,13 +85,13 @@ jobs:
   deploy_dev_and_test:
     needs: migrate_database
     runs-on: ubuntu-latest
-    environment: 
-      name: 'Dev & Testing'
+    environment:
+      name: "Dev & Testing"
     steps:
       - name: Download artifact for deployment job (Dev & Testing)
         uses: actions/download-artifact@v3
         with:
-          name: .net-app
+          name: CustomerManagementService-App
 
       - name: Deploy to Azure Web App (Dev & Testing)
         uses: azure/webapps-deploy@v2
