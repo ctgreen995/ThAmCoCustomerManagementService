@@ -64,7 +64,7 @@ jobs:
     needs: publish
     runs-on: ubuntu-latest
     environment:
-      name: "Production-Migration-Approval" # This environment requires manual approval
+      name: "Production"
     steps:
       - uses: actions/checkout@v3
       - name: Generate migration script for production
@@ -81,7 +81,7 @@ jobs:
     needs: create_database_migration
     runs-on: ubuntu-latest
     environment:
-      name: "Production"
+      name: "Production-Migration-Approval" # This environment requires manual approval
     steps:
       - uses: actions/checkout@v3
       - name: Set up .NET Core
@@ -96,7 +96,6 @@ jobs:
         run: dotnet ef database update --project CustomerManagementService.csproj
         env:
           ConnectionStrings__CustomerDbConnection: ${{ secrets.PRODUCTION_CUSTOMER_DB_CONNECTION }}
-
 
   deploy_production:
     needs: migrate_database
