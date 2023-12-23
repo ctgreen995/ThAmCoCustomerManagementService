@@ -67,6 +67,13 @@ jobs:
       name: "Production"
     steps:
       - uses: actions/checkout@v3
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install Entity Framework Core tools
+        run: dotnet tool install --global dotnet-ef --version 7.0.7
       - name: Generate migration script for production
         run: dotnet ef migrations script --idempotent --output ./Data/Migrations/productionMigrations.sql --project CustomerManagementService.csproj
         env:
