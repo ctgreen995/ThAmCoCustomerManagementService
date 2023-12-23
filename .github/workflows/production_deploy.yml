@@ -60,8 +60,25 @@ jobs:
           name: CustomerManagementService-App
           path: ./publish
 
-  migrate_database:
+  create_database_migration:
     needs: publish
+    runs-on: ubuntu-latest
+    environment:
+      name: "Production-Migration-Approval" # This environment requires manual approval
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate migration script for production
+        run: dotnet ef migrations script --idempotent --output ./Data/Migrations/productionMigrations.sql --project CustomerManagementService.csproj
+        env:
+          ConnectionStrings__CustomerDbConnection: ${{ secrets.PRODUCTION_CUSTOMER_DB_CONNECTION }}
+      - name: Upload migration script for manual review
+        uses: actions/upload-artifact@v3
+        with:
+          name: migration-script
+          path: ./Data/Migrations/productionMigrations.sql
+
+  migrate_database:
+    needs: create_database_migration
     runs-on: ubuntu-latest
     environment:
       name: "Production"
@@ -75,16 +92,11 @@ jobs:
       - name: Install Entity Framework Core tools
         run: dotnet tool install --global dotnet-ef --version 7.0.7
 
-      - name: Generate migration script for production
-        run: dotnet ef migrations script --idempotent --output ./Data/Migrations/productionMigrations.sql --project CustomerManagementService.csproj
+      - name: Apply database migrations (Production)
+        run: dotnet ef database update --project CustomerManagementService.csproj
         env:
           ConnectionStrings__CustomerDbConnection: ${{ secrets.PRODUCTION_CUSTOMER_DB_CONNECTION }}
 
-      - name: Upload migration script for manual review
-        uses: actions/upload-artifact@v3
-        with:
-          name: migration-script
-          path: ./Data/Migrations/productionMigrations.sql
 
   deploy_production:
     needs: migrate_database
