@@ -13,16 +13,65 @@ permissions:
   contents: read
 
 jobs:
-  deploy_production:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Set up dependency caching for faster builds
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Test with dotnet
+        run: dotnet test --configuration Release --no-build
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: dotnet publish (Production)
+        run: dotnet publish CustomerManagementService.csproj -c Release -o ./publish
+      - name: Upload artifact for deployment job (Production)
+        uses: actions/upload-artifact@v3
+        with:
+          name: CustomerManagementService-App
+          path: ./publish
+
+  migrate_database:
+    needs: publish
+    runs-on: ubuntu-latest
+    environment:
+      name: "Production"
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
       - name: Install Entity Framework Core tools
         run: dotnet tool install --global dotnet-ef --version 7.0.7
 
@@ -37,18 +86,20 @@ jobs:
           name: migration-script
           path: ./Data/Migrations/productionMigrations.sql
 
-      - name: dotnet publish (Production)
-        run: dotnet publish CustomerManagementService.csproj -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/publish
-
-      - name: Upload artifact for deployment job (Production)
-        uses: actions/upload-artifact@v3
+  deploy_production:
+    needs: migrate_database
+    runs-on: ubuntu-latest
+    environment:
+      name: "Production"
+    steps:
+      - name: Download artifact for deployment job (Production)
+        uses: actions/download-artifact@v3
         with:
-          name: .net-app
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/publish
+          name: CustomerManagementService-App
 
       - name: Deploy to Azure Web App (Production)
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/publish
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
