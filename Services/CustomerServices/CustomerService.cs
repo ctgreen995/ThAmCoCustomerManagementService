@@ -26,7 +26,8 @@ public class CustomerService : ICustomerService
 
     public async Task<CustomerDto?> GetCustomerByIdAsync(string id)
     {
-        var customer = await _customerRepository.GetCustomerByAuthIdAsync(id);
+        var formattedId = id.Substring(6);
+        var customer = await _customerRepository.GetCustomerByAuthIdAsync(formattedId);
         if (customer == null)
         {
             throw new KeyNotFoundException("Customer not found.");
