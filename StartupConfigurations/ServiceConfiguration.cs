@@ -32,6 +32,12 @@ public static class ServiceConfiguration
         services.AddScoped<ICustomerProfileRepository, CustomerProfileRepository>();
 
         services.AddDbContext<CustomerDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("CustomerDbConnection")));
+            options.UseSqlServer(configuration.GetConnectionString("CustomerDbConnection"), sqlServerOptionsAction: sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorNumbersToAdd: null);
+            }));
     }
 }

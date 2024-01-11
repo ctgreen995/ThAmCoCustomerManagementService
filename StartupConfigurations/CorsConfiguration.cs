@@ -7,7 +7,7 @@ namespace CustomerManagementService
             services.AddCors(options =>
             {
                 options.AddPolicy("DevPolicy", builder =>
-                    builder.WithOrigins("http://localhost:7040")
+                    builder.WithOrigins("https://localhost:7040")
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
