@@ -9,15 +9,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder
-                        .AllowAnyOrigin()
-                        .WithMethods("GET", "POST", "PATCH", "DELETE")
-                        .AllowAnyHeader()
-                );
-            });
+            services.AddCorsServices();
             services.AddAuthenticationServices(Configuration);
             services.AddAuthorizationServices();
             services.AddServiceDependencies(Configuration);
@@ -25,17 +17,19 @@
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors("CorsPolicy");
+
             if (env.IsDevelopment())
             {
+                app.UseCors("DevPolicy");
                 app.UseMigrationsEndPoint();
                 app.UseDeveloperExceptionPage();
             }
             else
             {
+                app.UseCors("ProdPolicy");
                 app.UseHsts();
             }
-            
+
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
