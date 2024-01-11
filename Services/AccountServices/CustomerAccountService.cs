@@ -43,9 +43,14 @@ public class CustomerAccountService : ICustomerAccountService
     public async Task UpdateAccountByCustomerIdAsync(Guid? customerId, CustomerAccountDto customerAccountDto)
     {
         if(customerId == null) throw new ArgumentNullException(nameof(customerId));
-        var account = _mapper.Map<CustomerAccount>(customerAccountDto);
+    
+        var accountToUpdate = await _customerAccountRepository.GetAccountByCustomerIdAsync(customerId);
+        if (accountToUpdate == null)
+        {
+            throw new KeyNotFoundException($"Account with ID {customerId} not found.");
+        }
+        _mapper.Map(customerAccountDto, accountToUpdate);
 
-        account.CustomerId = customerId;
-        await _customerAccountRepository.UpdateAccountByCustomerIdAsync(account);
+        await _customerAccountRepository.UpdateAccountByCustomerIdAsync(accountToUpdate);
     }
 }

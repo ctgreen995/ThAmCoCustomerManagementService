@@ -42,11 +42,17 @@ public class CustomerProfileService : ICustomerProfileService
         await _customerProfileRepository.AddProfileAsync(profile);
     }
 
-    public Task UpdateProfileByCustomerIdAsync(Guid? customerId, CustomerProfileDto customerProfileDto)
+    public async Task UpdateProfileByCustomerIdAsync(Guid? customerId, CustomerProfileDto customerProfileDto)
     {
         if(customerId == null) throw new ArgumentNullException(nameof(customerId));
-        var profile = _mapper.Map<CustomerProfile>(customerProfileDto);
-        profile.CustomerId = customerId;
-        return _customerProfileRepository.UpdateProfileByCustomerIdAsync(profile);
+
+        var profileToUpdate = await _customerProfileRepository.GetProfileByCustomerIdAsync(customerId);
+        if (profileToUpdate == null)
+        {
+            throw new KeyNotFoundException($"Profile with ID {customerId} not found.");
+        }
+
+        _mapper.Map(customerProfileDto, profileToUpdate);
+        await _customerProfileRepository.UpdateProfileByCustomerIdAsync(profileToUpdate);
     }
 }
