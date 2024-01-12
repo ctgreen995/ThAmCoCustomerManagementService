@@ -3,21 +3,24 @@
     public class Startup
     {
         private IConfiguration Configuration { get; }
+        private IWebHostEnvironment Environment { get; }
 
-        public Startup(IConfiguration configuration)
-            => Configuration = configuration;
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        {
+            Configuration = configuration;
+            Environment = env;
+        }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCorsServices();
             services.AddAuthenticationServices(Configuration);
             services.AddAuthorizationServices();
-            services.AddServiceDependencies(Configuration);
+            services.AddServiceDependencies(Configuration, Environment);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
             if (env.IsDevelopment())
             {
                 app.UseCors("DevPolicy");
