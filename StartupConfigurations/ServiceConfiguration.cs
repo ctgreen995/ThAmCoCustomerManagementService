@@ -46,6 +46,7 @@ public static class ServiceConfiguration
                for demonstration purposes fake is used.
              */
             services.AddScoped<IRequestDeleteCustomerService, FakeRequestDeleteCustomerService>();
+            
             // AddPollyPolicies(services);
             // services.AddHttpClient<IRequestDeleteCustomerService, RequestDeleteCustomerService>(client =>
             //     {

@@ -28,6 +28,7 @@ public class CustomerAccountRepository : ICustomerAccountRepository
     {
         var accountToUpdate =
             await _context.Accounts.FirstOrDefaultAsync(a => a.CustomerId == customerAccount.CustomerId);
+            
         if (accountToUpdate == null)
         {
             throw new KeyNotFoundException("Account not found.");
