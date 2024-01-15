@@ -13,7 +13,7 @@ namespace CustomerManagementService.Authorisation
             if (context.User != null && requirement.ValidPermissions.Any())
             {
                 var permissionsClaim = context.User.Claims
-                    .FirstOrDefault(c => c.Type == "scope");
+                    .FirstOrDefault(c => c.Type == "permissions");
 
                 if (permissionsClaim != null)
                 {
