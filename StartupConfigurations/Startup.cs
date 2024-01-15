@@ -13,7 +13,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCorsServices();
+            services.AddCorsServices(Configuration);
             services.AddAuthenticationServices(Configuration);
             services.AddAuthorizationServices();
             services.AddServiceDependencies(Configuration, Environment);
@@ -23,16 +23,11 @@
         {
             if (env.IsDevelopment())
             {
-                app.UseCors("DevPolicy");
+                app.UseCors("CorsPolicy");
                 app.UseMigrationsEndPoint();
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseCors("ProdPolicy");
-                app.UseHsts();
-            }
-
+            
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();

@@ -2,22 +2,18 @@ namespace CustomerManagementService
 {
     public static class CorsConfiguration
     {
-        public static void AddCorsServices(this IServiceCollection services)
+        public static void AddCorsServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddCors(options =>
             {
-                options.AddPolicy("DevPolicy", builder =>
-                    builder.WithOrigins("https://localhost:7040")
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>();
+                    builder.WithOrigins(allowedOrigins)
                         .AllowAnyMethod()
-                        .AllowAnyHeader());
-            });
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("ProdPolicy", builder =>
-                    builder.WithOrigins("https://thamcoapigatewayproduction.azurewebsites.net")
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
             });
         }
     }
