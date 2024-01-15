@@ -1,5 +1,3 @@
-using AutoMapper.Internal;
-using CustomerManagementService.Authorisation;
 using CustomerManagementService.Dtos;
 using CustomerManagementService.Services.CustomerServices;
 using CustomerManagementService.Services.RequestDeleteCustomerSevices;
@@ -58,11 +56,11 @@ public class CustomerController : ControllerBase
         {
             return BadRequest("Customer id cannot be null.\n" + e.Message);
         }
-        catch(InvalidOperationException e)
+        catch (InvalidOperationException e)
         {
             return BadRequest("Invalid operation.\n" + e.Message);
         }
-        
+
         catch (DbUpdateException e)
         {
             return BadRequest("An error occurred while attempting to create the user in the database.\n"
@@ -74,7 +72,7 @@ public class CustomerController : ControllerBase
                               + ex.Message);
         }
     }
-    
+
     [HttpPatch]
     [Authorize(Policy = "UpdateCustomer")]
     [Route("updateCustomerById/{id}")]
@@ -122,12 +120,12 @@ public class CustomerController : ControllerBase
         {
             return BadRequest("An error occurred while processing your request to delete a customer.\n"
                               + e.Message);
-        
+
         }
     }
-    
+
     [HttpDelete]
-    [Authorize(Policy = "DeleteCustomer")]
+    [Authorize(Policy = "RequestDeleteCustomer")]
     [Route("requestDeleteCustomer/{id}")]
     public async Task<ActionResult> RequestCustomerDeletion(string id)
     {
@@ -149,7 +147,7 @@ public class CustomerController : ControllerBase
         {
             return BadRequest("An error occurred while processing your request to delete a customer.\n"
                               + e.Message);
-        
+
         }
     }
 }
