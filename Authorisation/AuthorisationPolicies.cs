@@ -9,7 +9,7 @@ namespace CustomerManagementService.Authorisation
                 new("CreateCustomer", new[] { "create:customer" }),
                 new("UpdateCustomer", new[] { "update:customer" }),
                 new("DeleteCustomer", new[] { "delete:customer" }),
-                new("RequestDeleteCustomer", new[] { "requestDelete:customer" }),
+                new("RequestToDeleteCustomer", new[] { "requestDelete:customer" }),
             });
     }
 

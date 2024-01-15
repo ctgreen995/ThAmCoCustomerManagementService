@@ -125,7 +125,7 @@ public class CustomerController : ControllerBase
     }
 
     [HttpDelete]
-    [Authorize(Policy = "RequestDeleteCustomer")]
+    [Authorize(Policy = "RequestToDeleteCustomer")]
     [Route("requestDeleteCustomer/{id}")]
     public async Task<ActionResult> RequestCustomerDeletion(string id)
     {
